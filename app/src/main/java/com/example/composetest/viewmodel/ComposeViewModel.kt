@@ -51,9 +51,19 @@ class ComposeViewModel @Inject constructor(private val userInfoRepo: UserInfoRep
         team.value = teamName
     }
 
+    fun onItemLongClick(userInfo: UserInfo){
+        deleteUserInfo(userInfo)
+    }
+
     fun saveUserInfo(userInfo: UserInfo) {
         viewModelScope.launch {
             userInfoRepo.addUser(userInfo)
+        }
+    }
+
+    fun deleteUserInfo(userInfo: UserInfo) {
+        viewModelScope.launch {
+            userInfoRepo.removeUser(userInfo)
         }
     }
 }

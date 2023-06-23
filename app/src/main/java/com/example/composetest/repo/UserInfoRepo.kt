@@ -33,4 +33,16 @@ class UserInfoRepo @Inject constructor(@ApplicationContext private val context: 
                 .build()
         }
     }
+
+    suspend fun removeUser(userInfo: UserInfo) {
+        context.userListProto.updateData { infoBuilder ->
+            val builder = infoBuilder.toBuilder()
+            val targetUser = builder.userInfoListList.firstOrNull { userInfoProto -> userInfo.userId == userInfoProto.userId }
+            targetUser?.let {
+                val index = builder.userInfoListList.indexOf(targetUser)
+                builder.removeUserInfoList(index)
+            }
+            builder.build()
+        }
+    }
 }

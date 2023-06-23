@@ -1,7 +1,9 @@
 package com.example.composetest
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -51,6 +53,7 @@ fun MainScreen(composeViewModel: ComposeViewModel = hiltViewModel()) {
         onInputName = { composeViewModel.onInputName() },
         onJobSelected = { composeViewModel.onJobSelected(it) },
         onTeamSelected = { composeViewModel.onTeamSelected(it) },
+        onItemLongClick = {composeViewModel.onItemLongClick(it) },
     )
 }
 
@@ -66,6 +69,7 @@ fun MainContent(
     onInputName: () -> Unit,
     onJobSelected: (String) -> Unit,
     onTeamSelected: (String) -> Unit,
+    onItemLongClick : (UserInfo) -> Unit,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val isShowTeamDialog = remember { mutableStateOf(false) }
@@ -132,12 +136,12 @@ fun MainContent(
                 }
             }
         }
-        NameListView(nameList = nameList)
+        NameListView(nameList = nameList, onItemLongClick)
     }
 }
 
 @Composable
-fun NameListView(nameList: userListProto) {
+fun NameListView(nameList: userListProto, onItemLongClick : (UserInfo) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxHeight()
@@ -153,7 +157,7 @@ fun NameListView(nameList: userListProto) {
             }
         }
         items(nameList.userInfoListCount) { index ->
-            UserInfoItem(nameList.getUserInfoList(index))
+            UserInfoItem(nameList.getUserInfoList(index), onItemLongClick)
         }
     }
 }
@@ -222,8 +226,9 @@ fun JobDropDown(job: String, jobList: ArrayList<String>, onJobSelected: (String)
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun UserInfoItem(userProto: userInfoProto) {
+fun UserInfoItem(userProto: userInfoProto, onItemLongClick : (UserInfo) -> Unit) {
     val userInfo = UserInfo(
         userName = userProto.userName,
         isOnOff = userProto.isOnOff,
@@ -234,6 +239,12 @@ fun UserInfoItem(userProto: userInfoProto) {
 
     ConstraintLayout(
         modifier = Modifier
+            .combinedClickable(
+                onClick = {},
+                onLongClick = {
+                    onItemLongClick(userInfo)
+                }
+            )
             .fillMaxWidth()
             .padding(top = 10.dp, bottom = 10.dp),
     ) {
