@@ -30,7 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.composetest.data.UserInfo
 import com.example.composetest.ui.theme.*
+import com.example.composetest.viewmodel.ComposeViewModel
 
 
 @Composable

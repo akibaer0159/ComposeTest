@@ -1,8 +1,12 @@
-package com.example.composetest
+package com.example.composetest.repo
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
+import com.example.composetest.data.UserInfo
+import com.example.composetest.data.UserListSerializer
+import com.example.composetest.userInfoProto
+import com.example.composetest.userListProto
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.example.composetest
+package com.example.composetest.data
 
 import androidx.compose.ui.graphics.Color
 

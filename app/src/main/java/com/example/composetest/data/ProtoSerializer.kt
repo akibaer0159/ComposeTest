@@ -1,7 +1,8 @@
-package com.example.composetest
+package com.example.composetest.data
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
+import com.example.composetest.userListProto
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream

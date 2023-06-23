@@ -1,9 +1,11 @@
-package com.example.composetest
+package com.example.composetest.viewmodel
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.composetest.data.UserInfo
+import com.example.composetest.repo.UserInfoRepo
+import com.example.composetest.userListProto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
