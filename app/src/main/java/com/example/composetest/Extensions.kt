@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.composetest.ui.theme.brownKB
 import com.example.composetest.ui.theme.grayEA
 
 fun Color.Companion.fromHex(s: String): Color = Color(android.graphics.Color.parseColor(s))

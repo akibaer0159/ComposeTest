@@ -14,6 +14,6 @@ val black22 = Color(0xFF222222)
 val black33 = Color(0xFF333333)
 val grayBB = Color(0xFFbbbbbb)
 val grayEA = Color(0xFFeaeaea)
-val brownKB = Color(0xFF60584c)
+val darkBrown = Color(0xFF60584c)
 
 val buttonOK = Color(0xFFf46600)

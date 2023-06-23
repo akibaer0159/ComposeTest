@@ -2,13 +2,14 @@ package com.example.composetest
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -166,7 +167,7 @@ fun JobDropDown(job: String, jobList: ArrayList<String>, onJobSelected: (String)
             .spinnerBorder(
                 strokeWidth = 1.dp,
                 cornerRadiusDp = 4.dp,
-                color = brownKB,
+                color = darkBrown,
                 expanded = expanded,
             ),
         expanded = expanded,
@@ -185,8 +186,8 @@ fun JobDropDown(job: String, jobList: ArrayList<String>, onJobSelected: (String)
                 textAlign = TextAlign.Center,
                 fontSize = 15.sp,
             )
-            Image(
-                painter = painterResource(id = R.drawable.dropdown),
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = "dropdown",
                 modifier = Modifier.rotate(
                     if (expanded)
@@ -202,7 +203,7 @@ fun JobDropDown(job: String, jobList: ArrayList<String>, onJobSelected: (String)
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .background(Color.White)
-                .dropDownBorder(strokeWidth = 1.dp, cornerRadiusDp = 4.dp, color = brownKB)
+                .dropDownBorder(strokeWidth = 1.dp, cornerRadiusDp = 4.dp, color = darkBrown)
         ) {
             jobList.forEach { clickedJob ->
                 DropdownMenuItem(
@@ -238,7 +239,7 @@ fun UserInfoItem(userProto: userInfoProto) {
         createVerticalChain(name, team, chainStyle = ChainStyle.Packed)
 
         Image(
-            painter = painterResource(id = R.drawable.profile_sample_102_5),
+            painter = painterResource(id = R.drawable.circle_icons_profile),
             contentDescription = "avatar",
             contentScale = ContentScale.Crop,
             modifier = Modifier
