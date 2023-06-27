@@ -1,5 +1,6 @@
-package com.example.composetest
+package com.example.composetest.compose
 
+import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,38 +23,42 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.composetest.*
+import com.example.composetest.R
 import com.example.composetest.data.UserInfo
 import com.example.composetest.ui.theme.*
-import com.example.composetest.viewmodel.ComposeViewModel
+import com.example.composetest.viewmodel.ListViewModel
 
-
+@Preview
 @Composable
-fun MainScreen(composeViewModel: ComposeViewModel = hiltViewModel()) {
-    val name: String by composeViewModel.name.observeAsState("")
-    val nameList: userListProto by composeViewModel.userDataStore.collectAsState(initial = userListProto.getDefaultInstance())
-    val job: String by composeViewModel.job.observeAsState("")
+fun MainScreen(listViewModel: ListViewModel = hiltViewModel()) {
+    val name: String by listViewModel.name.observeAsState("")
+    val nameList: userListProto by listViewModel.userDataStore.collectAsState(initial = userListProto.getDefaultInstance())
+    val job: String by listViewModel.job.observeAsState("")
 
     MainContent(
         name = name,
         nameList = nameList,
         job = job,
-        jobList = composeViewModel.jobList,
-        teamList = composeViewModel.teamList,
-        onNameChange = { composeViewModel.onNameChanged(it) },
-        onInputName = { composeViewModel.onInputName() },
-        onJobSelected = { composeViewModel.onJobSelected(it) },
-        onTeamSelected = { composeViewModel.onTeamSelected(it) },
-        onItemLongClick = {composeViewModel.onItemLongClick(it) },
+        jobList = listViewModel.jobList,
+        teamList = listViewModel.teamList,
+        onNameChange = { listViewModel.onNameChanged(it) },
+        onInputName = { listViewModel.onInputName() },
+        onJobSelected = { listViewModel.onJobSelected(it) },
+        onTeamSelected = { listViewModel.onTeamSelected(it) },
+        onItemLongClick = { listViewModel.onItemLongClick(it) },
     )
 }
 
@@ -69,79 +74,79 @@ fun MainContent(
     onInputName: () -> Unit,
     onJobSelected: (String) -> Unit,
     onTeamSelected: (String) -> Unit,
-    onItemLongClick : (UserInfo) -> Unit,
+    onItemLongClick: (UserInfo) -> Unit,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val isShowTeamDialog = remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .background(Color.White)
-    ) {
-        TeamDialog(
-            isShowTeamDialog = isShowTeamDialog,
-            teamList = teamList,
-            onTeamSelected = onTeamSelected,
-        )
+    Box(modifier = Modifier.background(Color.White)) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            TeamDialog(
+                isShowTeamDialog = isShowTeamDialog,
+                teamList = teamList,
+                onTeamSelected = onTeamSelected,
+            )
 
-        Text(
-            text = "Hello, $name",
-            modifier = Modifier.padding(bottom = 8.dp),
-            style = MaterialTheme.typography.headlineLarge
-        )
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(60.dp)) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            ) {
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = onNameChange,
-                    placeholder = { Text(text = "name", color = grayBB) },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            onInputName()
-                            onNameChange("")
-                            keyboard?.hide()
-                        },
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            Spacer(Modifier.size(10.dp))
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-            ) {
-                JobDropDown(job = job, jobList = jobList, onJobSelected = onJobSelected)
-            }
-            Spacer(Modifier.size(10.dp))
-            Column(
-                modifier = Modifier
-                    .weight(0.7f)
-                    .fillMaxHeight()
-            ) {
-                Button(
-                    modifier = Modifier.fillMaxSize(),
-                    onClick = { isShowTeamDialog.value = true },
-                    shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = buttonOK),
+            Text(
+                text = "Hello, $name",
+                modifier = Modifier.padding(bottom = 8.dp),
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(60.dp)) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
                 ) {
-                    Text(text = "Team", fontSize = 14.sp)
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = onNameChange,
+                        placeholder = { Text(text = "name", color = grayBB) },
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                onInputName()
+                                onNameChange("")
+                                keyboard?.hide()
+                            },
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Spacer(Modifier.size(10.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                ) {
+                    JobDropDown(job = job, jobList = jobList, onJobSelected = onJobSelected)
+                }
+                Spacer(Modifier.size(10.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(0.7f)
+                        .fillMaxHeight()
+                ) {
+                    Button(
+                        modifier = Modifier.fillMaxSize(),
+                        onClick = { isShowTeamDialog.value = true },
+                        shape = RoundedCornerShape(4.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = buttonOK),
+                    ) {
+                        Text(text = "Team", fontSize = 14.sp)
+                    }
                 }
             }
+            UserListView(userList = nameList, onItemLongClick)
         }
-        NameListView(nameList = nameList, onItemLongClick)
     }
 }
 
 @Composable
-fun NameListView(nameList: userListProto, onItemLongClick : (UserInfo) -> Unit) {
+fun UserListView(userList: userListProto, onItemLongClick: (UserInfo) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxHeight()
@@ -156,8 +161,8 @@ fun NameListView(nameList: userListProto, onItemLongClick : (UserInfo) -> Unit) 
                 )
             }
         }
-        items(nameList.userInfoListCount) { index ->
-            UserInfoItem(nameList.getUserInfoList(index), onItemLongClick)
+        items(userList.userInfoListCount) { index ->
+            UserInfoItem(userList.getUserInfoList(index), onItemLongClick)
         }
     }
 }
@@ -228,7 +233,7 @@ fun JobDropDown(job: String, jobList: ArrayList<String>, onJobSelected: (String)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun UserInfoItem(userProto: userInfoProto, onItemLongClick : (UserInfo) -> Unit) {
+fun UserInfoItem(userProto: userInfoProto, onItemLongClick: (UserInfo) -> Unit) {
     val userInfo = UserInfo(
         userName = userProto.userName,
         isOnOff = userProto.isOnOff,
@@ -237,10 +242,14 @@ fun UserInfoItem(userProto: userInfoProto, onItemLongClick : (UserInfo) -> Unit)
         userId = userProto.userId,
     )
 
+    val context = LocalContext.current
+
     ConstraintLayout(
         modifier = Modifier
             .combinedClickable(
-                onClick = {},
+                onClick = {
+                    context.startActivity(DetailActivity.newInstance(context, userInfo.userId))
+                },
                 onLongClick = {
                     onItemLongClick(userInfo)
                 }

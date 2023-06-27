@@ -8,6 +8,10 @@ import com.example.composetest.data.UserListSerializer
 import com.example.composetest.userInfoProto
 import com.example.composetest.userListProto
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 private val Context.userListProto: DataStore<userListProto> by dataStore(
@@ -37,12 +41,20 @@ class UserInfoRepo @Inject constructor(@ApplicationContext private val context: 
     suspend fun removeUser(userInfo: UserInfo) {
         context.userListProto.updateData { infoBuilder ->
             val builder = infoBuilder.toBuilder()
-            val targetUser = builder.userInfoListList.firstOrNull { userInfoProto -> userInfo.userId == userInfoProto.userId }
+            val targetUser =
+                builder.userInfoListList.firstOrNull { userInfoProto -> userInfo.userId == userInfoProto.userId }
             targetUser?.let {
                 val index = builder.userInfoListList.indexOf(targetUser)
                 builder.removeUserInfoList(index)
             }
             builder.build()
+        }
+    }
+
+    fun getUser(id: String): Flow<userInfoProto> {
+        return context.userListProto.data.map {
+            it.userInfoListList.firstOrNull { userInfoProto -> userInfoProto.userId == id }
+                ?: userInfoProto.getDefaultInstance()
         }
     }
 }

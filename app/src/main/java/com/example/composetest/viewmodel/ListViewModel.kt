@@ -13,7 +13,7 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 @HiltViewModel
-class ComposeViewModel @Inject constructor(private val userInfoRepo: UserInfoRepo) :
+class ListViewModel @Inject constructor(private val userInfoRepo: UserInfoRepo) :
     ViewModel() {
     val name = MutableLiveData("")
     val nameList = MutableLiveData<ArrayList<UserInfo>>(arrayListOf())

@@ -1,4 +1,4 @@
-package com.example.composetest
+package com.example.composetest.compose
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
