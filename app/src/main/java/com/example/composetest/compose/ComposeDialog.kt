@@ -11,14 +11,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.composetest.ui.theme.black22
-import com.example.composetest.ui.theme.black33
-import com.example.composetest.ui.theme.buttonOK
-import com.example.composetest.ui.theme.grayEA
+import com.example.composetest.ui.theme.*
 
 @Composable
 fun ShowTeamDialog(
@@ -71,6 +69,60 @@ fun ShowTeamDialog(
             }
         },
     )
+}
+
+@Composable
+fun msgDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    msg: String,
+) {
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = Color.White,
+            shadowElevation = 8.dp
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Alert!!",
+                    color = black22,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = msg,
+                    color = darkBrown,
+                    fontSize = 13.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Row {
+                    OutlinedButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = { onDismiss() },
+                        shape = RoundedCornerShape(8.dp),
+                        border = BorderStroke(1.dp, grayEA)
+                    ) {
+                        Text(text = "cancel", color = black22)
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(4.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = buttonOK),
+                        onClick = { onConfirm() },
+                    ) {
+                        Text(text = "OK", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

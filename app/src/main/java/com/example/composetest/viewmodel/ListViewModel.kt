@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.composetest.data.UserInfo
 import com.example.composetest.repo.UserInfoRepo
+import com.example.composetest.userInfoProto
 import com.example.composetest.userListProto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +52,7 @@ class ListViewModel @Inject constructor(private val userInfoRepo: UserInfoRepo) 
         team.value = teamName
     }
 
-    fun onItemLongClick(userInfo: UserInfo){
+    fun onItemLongClick(userInfo: userInfoProto) {
         deleteUserInfo(userInfo)
     }
 
@@ -61,9 +62,10 @@ class ListViewModel @Inject constructor(private val userInfoRepo: UserInfoRepo) 
         }
     }
 
-    fun deleteUserInfo(userInfo: UserInfo) {
+    fun deleteUserInfo(userInfo: userInfoProto, onDeleteDone: () -> Unit = { }) {
         viewModelScope.launch {
             userInfoRepo.removeUser(userInfo)
+            onDeleteDone()
         }
     }
 }

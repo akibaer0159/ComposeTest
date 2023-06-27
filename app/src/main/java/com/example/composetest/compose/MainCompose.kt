@@ -1,6 +1,5 @@
 package com.example.composetest.compose
 
-import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -74,7 +73,7 @@ fun MainContent(
     onInputName: () -> Unit,
     onJobSelected: (String) -> Unit,
     onTeamSelected: (String) -> Unit,
-    onItemLongClick: (UserInfo) -> Unit,
+    onItemLongClick: (userInfoProto) -> Unit,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val isShowTeamDialog = remember { mutableStateOf(false) }
@@ -146,7 +145,7 @@ fun MainContent(
 }
 
 @Composable
-fun UserListView(userList: userListProto, onItemLongClick: (UserInfo) -> Unit) {
+fun UserListView(userList: userListProto, onItemLongClick: (userInfoProto) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxHeight()
@@ -233,7 +232,7 @@ fun JobDropDown(job: String, jobList: ArrayList<String>, onJobSelected: (String)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun UserInfoItem(userProto: userInfoProto, onItemLongClick: (UserInfo) -> Unit) {
+fun UserInfoItem(userProto: userInfoProto, onItemLongClick: (userInfoProto) -> Unit) {
     val userInfo = UserInfo(
         userName = userProto.userName,
         isOnOff = userProto.isOnOff,
@@ -251,7 +250,7 @@ fun UserInfoItem(userProto: userInfoProto, onItemLongClick: (UserInfo) -> Unit) 
                     context.startActivity(DetailActivity.newInstance(context, userInfo.userId))
                 },
                 onLongClick = {
-                    onItemLongClick(userInfo)
+                    onItemLongClick(userProto)
                 }
             )
             .fillMaxWidth()

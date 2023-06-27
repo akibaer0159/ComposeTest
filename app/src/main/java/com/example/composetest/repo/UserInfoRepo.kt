@@ -9,8 +9,6 @@ import com.example.composetest.userInfoProto
 import com.example.composetest.userListProto
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -38,15 +36,11 @@ class UserInfoRepo @Inject constructor(@ApplicationContext private val context: 
         }
     }
 
-    suspend fun removeUser(userInfo: UserInfo) {
+    suspend fun removeUser(userInfo: userInfoProto) {
         context.userListProto.updateData { infoBuilder ->
             val builder = infoBuilder.toBuilder()
-            val targetUser =
-                builder.userInfoListList.firstOrNull { userInfoProto -> userInfo.userId == userInfoProto.userId }
-            targetUser?.let {
-                val index = builder.userInfoListList.indexOf(targetUser)
-                builder.removeUserInfoList(index)
-            }
+            val index = builder.userInfoListList.indexOf(userInfo)
+            builder.removeUserInfoList(index)
             builder.build()
         }
     }

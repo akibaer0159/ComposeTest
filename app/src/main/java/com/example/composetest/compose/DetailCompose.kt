@@ -1,45 +1,66 @@
 package com.example.composetest.compose
 
+import android.app.Activity
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.composetest.R
-import com.example.composetest.ui.theme.black22
-import com.example.composetest.ui.theme.darkBrown
-import com.example.composetest.ui.theme.grayEA
+import com.example.composetest.ui.theme.*
 import com.example.composetest.userInfoProto
 import com.example.composetest.viewmodel.DetailViewModel
+import com.example.composetest.viewmodel.ListViewModel
 
 @Composable
-fun DetailScreen(userId: String, detailViewModel: DetailViewModel = hiltViewModel()) {
+fun DetailScreen(
+    userId: String,
+    detailViewModel: DetailViewModel = hiltViewModel(),
+    listViewModel: ListViewModel = hiltViewModel()
+) {
     val userInfo: userInfoProto by detailViewModel.getUserInfo(userId)
         .collectAsState(initial = userInfoProto.getDefaultInstance())
+    val act = LocalContext.current as Activity
 
-    DetailContent(userInfo)
+    DetailContent(
+        userInfo = userInfo,
+        onDeleteClick = {
+            listViewModel.deleteUserInfo(userInfo) {
+                act.finish()
+            }
+        },
+        onEditClick = {
+            //Todo Edit UserInfo
+        }
+    )
 }
 
 @Composable
-fun DetailContent(userInfo: userInfoProto) {
-    Box(modifier = Modifier
-        .background(Color.White)
-        .fillMaxSize()) {
+fun DetailContent(userInfo: userInfoProto, onDeleteClick: () -> Unit, onEditClick: () -> Unit) {
+    val isShowTeamDialog = remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxWidth()
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
+            confirmDialog(isShowTeamDialog, onDeleteClick)
+
             Row(
                 modifier = Modifier.padding(vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -90,11 +111,55 @@ fun DetailContent(userInfo: userInfoProto) {
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = userInfo.userTeamName,
-                    color = black22,
+                    color = black33,
                     fontSize = 14.sp,
                     modifier = Modifier.weight(8f)
                 )
             }
+            Divider(color = grayEA, thickness = 1.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(modifier = Modifier.padding(vertical = 10.dp)) {
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        isShowTeamDialog.value = true
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, grayEA)
+                ) {
+                    Text(text = "Delete", color = black22)
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Button(
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(4.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = buttonOK),
+                    onClick = {
+                        onEditClick()
+                    },
+                ) {
+                    Text(text = "Edit", color = Color.White)
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun confirmDialog(
+    isShowTeamDialog: MutableState<Boolean>,
+    onConfirm: () -> Unit,
+) {
+    if (isShowTeamDialog.value) {
+        msgDialog(
+            onDismiss = {
+                isShowTeamDialog.value = false
+            },
+            onConfirm = {
+                onConfirm()
+                isShowTeamDialog.value = false
+            },
+            "Delete User?"
+        )
     }
 }
