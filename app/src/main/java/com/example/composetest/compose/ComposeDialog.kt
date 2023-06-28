@@ -130,8 +130,9 @@ fun customDialog(
     onDismiss: () -> Unit,
     onSelectTeam: (String) -> Unit,
     teamList: ArrayList<String>,
+    team: String,
 ) {
-    val selectedTeam = remember { mutableStateOf("") }
+    val selectedTeam = remember { mutableStateOf(team) }
 
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(

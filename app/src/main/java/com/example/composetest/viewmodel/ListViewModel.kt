@@ -19,9 +19,9 @@ class ListViewModel @Inject constructor(private val userInfoRepo: UserInfoRepo) 
     val name = MutableLiveData("")
     val nameList = MutableLiveData<ArrayList<UserInfo>>(arrayListOf())
     val jobList = arrayListOf("Android", "iOS", "Server", "Design", "Operator", "Leader")
-    val job = MutableLiveData(jobList[0])
-    val teamList = arrayListOf("기획팀", "개발팀", "인사팀")
-    val team = MutableLiveData(teamList[0])
+    val job = MutableLiveData(jobList.first())
+    val teamList = arrayListOf("Dev", "Manage", "Test")
+    val team = MutableLiveData(teamList.first())
     val userDataStore: Flow<userListProto> = userInfoRepo.userListDataStore
 
     fun onNameChanged(newName: String) {

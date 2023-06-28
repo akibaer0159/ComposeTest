@@ -46,11 +46,13 @@ fun MainScreen(listViewModel: ListViewModel = hiltViewModel()) {
     val name: String by listViewModel.name.observeAsState("")
     val nameList: userListProto by listViewModel.userDataStore.collectAsState(initial = userListProto.getDefaultInstance())
     val job: String by listViewModel.job.observeAsState("")
+    val team: String by listViewModel.team.observeAsState("")
 
     MainContent(
         name = name,
         nameList = nameList,
         job = job,
+        team = team,
         jobList = listViewModel.jobList,
         teamList = listViewModel.teamList,
         onNameChange = { listViewModel.onNameChanged(it) },
@@ -67,6 +69,7 @@ fun MainContent(
     name: String,
     nameList: userListProto,
     job: String,
+    team: String,
     jobList: ArrayList<String>,
     teamList: ArrayList<String>,
     onNameChange: (String) -> Unit,
@@ -85,6 +88,7 @@ fun MainContent(
             TeamDialog(
                 isShowTeamDialog = isShowTeamDialog,
                 teamList = teamList,
+                team = team,
                 onTeamSelected = onTeamSelected,
             )
 
@@ -350,6 +354,7 @@ fun UserInfoItem(userProto: userInfoProto, onItemLongClick: (userInfoProto) -> U
 fun TeamDialog(
     isShowTeamDialog: MutableState<Boolean>,
     teamList: ArrayList<String>,
+    team: String,
     onTeamSelected: (String) -> Unit,
 ) {
     if (isShowTeamDialog.value) {
@@ -362,6 +367,7 @@ fun TeamDialog(
                 isShowTeamDialog.value = false
             },
             teamList = teamList,
+            team = team,
         )
     }
 }
