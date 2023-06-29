@@ -68,4 +68,10 @@ class ListViewModel @Inject constructor(private val userInfoRepo: UserInfoRepo) 
             onDeleteDone()
         }
     }
+
+    fun editUserInfo(userInfo: userInfoProto) {
+        viewModelScope.launch {
+            userInfoRepo.editUser(userInfo)
+        }
+    }
 }

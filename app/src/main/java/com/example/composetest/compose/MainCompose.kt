@@ -107,7 +107,7 @@ fun MainContent(
                         value = name,
                         onValueChange = onNameChange,
                         placeholder = { Text(text = "name", color = grayBB) },
-                        maxLines = 1,
+                        singleLine = true,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(
                             onDone = {
@@ -125,7 +125,7 @@ fun MainContent(
                         .weight(1f)
                         .fillMaxHeight()
                 ) {
-                    JobDropDown(job = job, jobList = jobList, onJobSelected = onJobSelected)
+                    CustomDropDown(defaultValue = job, itemList = jobList, onItemSelected = onJobSelected)
                 }
                 Spacer(Modifier.size(10.dp))
                 Column(
@@ -172,7 +172,7 @@ fun UserListView(userList: userListProto, onItemLongClick: (userInfoProto) -> Un
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun JobDropDown(job: String, jobList: ArrayList<String>, onJobSelected: (String) -> Unit) {
+fun CustomDropDown(defaultValue: String, itemList: ArrayList<String>, onItemSelected: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
@@ -195,7 +195,7 @@ fun JobDropDown(job: String, jobList: ArrayList<String>, onJobSelected: (String)
         ) {
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = job,
+                text = defaultValue,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 fontSize = 15.sp,
@@ -219,14 +219,14 @@ fun JobDropDown(job: String, jobList: ArrayList<String>, onJobSelected: (String)
                 .background(Color.White)
                 .dropDownBorder(strokeWidth = 1.dp, cornerRadiusDp = 4.dp, color = darkBrown)
         ) {
-            jobList.forEach { clickedJob ->
+            itemList.forEach { clickedJob ->
                 DropdownMenuItem(
                     text = {
                         Text(text = clickedJob)
                     },
                     onClick = {
                         expanded = false
-                        onJobSelected(clickedJob)
+                        onItemSelected(clickedJob)
                     },
                 )
             }

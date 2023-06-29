@@ -45,6 +45,18 @@ class UserInfoRepo @Inject constructor(@ApplicationContext private val context: 
         }
     }
 
+    suspend fun editUser(userInfo: userInfoProto) {
+        context.userListProto.updateData { infoBuilder ->
+            val builder = infoBuilder.toBuilder()
+            val targetUser = builder.userInfoListList.firstOrNull { userInfoProto ->
+                userInfoProto.userId == userInfo.userId
+            } ?: userInfoProto.getDefaultInstance()
+            val index = builder.userInfoListList.indexOf(targetUser)
+            builder.setUserInfoList(index, userInfo)
+            builder.build()
+        }
+    }
+
     fun getUser(id: String): Flow<userInfoProto> {
         return context.userListProto.data.map {
             it.userInfoListList.firstOrNull { userInfoProto -> userInfoProto.userId == id }

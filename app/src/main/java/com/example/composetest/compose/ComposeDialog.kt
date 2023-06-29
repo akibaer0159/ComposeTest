@@ -5,18 +5,27 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.composetest.ui.theme.*
+import com.example.composetest.userInfoProto
+import com.example.composetest.viewmodel.ListViewModel
+import kotlin.random.Random
 
 @Composable
 fun ShowTeamDialog(
@@ -116,6 +125,110 @@ fun msgDialog(
                         shape = RoundedCornerShape(4.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = buttonOK),
                         onClick = { onConfirm() },
+                    ) {
+                        Text(text = "OK", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun editDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (userInfoProto) -> Unit,
+    userInfo: userInfoProto,
+    listViewModel: ListViewModel = hiltViewModel()
+) {
+    val newName = remember { mutableStateOf(TextFieldValue(userInfo.userName)) }
+    val newPosition = remember { mutableStateOf(userInfo.usePosition) }
+    val newTeam = remember { mutableStateOf(userInfo.userTeamName) }
+
+    val editUser = userInfoProto.newBuilder()
+    editUser.userName = userInfo.userName
+    editUser.isOnOff = userInfo.isOnOff
+    editUser.userId = userInfo.userId
+    editUser.usePosition = userInfo.usePosition
+    editUser.userTeamName = userInfo.userTeamName
+
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = Color.White,
+            shadowElevation = 8.dp
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Edit User Info",
+                    color = black22,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = newName.value,
+                    onValueChange = { newText ->
+                        newName.value = newText
+                        editUser.userName = newName.value.text
+                    },
+                    placeholder = { Text(text = "name", color = grayBB) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier
+                        .height(60.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CustomDropDown(
+                        defaultValue = newPosition.value,
+                        itemList = listViewModel.jobList,
+                        onItemSelected = { position ->
+                            newPosition.value = position
+                            editUser.usePosition = position
+                        })
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .height(60.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CustomDropDown(
+                        defaultValue = newTeam.value,
+                        itemList = listViewModel.teamList,
+                        onItemSelected = { team ->
+                            newTeam.value = team
+                            editUser.userTeamName = team
+                        })
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Row {
+                    OutlinedButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = { onDismiss() },
+                        shape = RoundedCornerShape(8.dp),
+                        border = BorderStroke(1.dp, grayEA)
+                    ) {
+                        Text(text = "cancel", color = black22)
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(4.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = buttonOK),
+                        onClick = { onConfirm(editUser.build()) },
                     ) {
                         Text(text = "OK", color = Color.White)
                     }

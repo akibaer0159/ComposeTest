@@ -43,15 +43,16 @@ fun DetailScreen(
                 act.finish()
             }
         },
-        onEditClick = {
-            //Todo Edit UserInfo
-        }
+        onEditClick = { editUserInfo ->
+            listViewModel.editUserInfo(editUserInfo)
+        },
     )
 }
 
 @Composable
-fun DetailContent(userInfo: userInfoProto, onDeleteClick: () -> Unit, onEditClick: () -> Unit) {
-    val isShowTeamDialog = remember { mutableStateOf(false) }
+fun DetailContent(userInfo: userInfoProto, onDeleteClick: () -> Unit, onEditClick: (userInfoProto) -> Unit) {
+    val isShowMsgDialog = remember { mutableStateOf(false) }
+    val isShowEditDialog = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -59,7 +60,9 @@ fun DetailContent(userInfo: userInfoProto, onDeleteClick: () -> Unit, onEditClic
             .fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            confirmDialog(isShowTeamDialog, onDeleteClick)
+            //Dialog
+            ConfirmDialog(isShowMsgDialog, onDeleteClick)
+            EditDialog(isShowEditDialog, onEditClick, userInfo)
 
             Row(
                 modifier = Modifier.padding(vertical = 10.dp),
@@ -122,7 +125,7 @@ fun DetailContent(userInfo: userInfoProto, onDeleteClick: () -> Unit, onEditClic
                 OutlinedButton(
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        isShowTeamDialog.value = true
+                        isShowMsgDialog.value = true
                     },
                     shape = RoundedCornerShape(8.dp),
                     border = BorderStroke(1.dp, grayEA)
@@ -135,7 +138,7 @@ fun DetailContent(userInfo: userInfoProto, onDeleteClick: () -> Unit, onEditClic
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = buttonOK),
                     onClick = {
-                        onEditClick()
+                        isShowEditDialog.value = true
                     },
                 ) {
                     Text(text = "Edit", color = Color.White)
@@ -146,20 +149,40 @@ fun DetailContent(userInfo: userInfoProto, onDeleteClick: () -> Unit, onEditClic
 }
 
 @Composable
-fun confirmDialog(
-    isShowTeamDialog: MutableState<Boolean>,
+fun ConfirmDialog(
+    isShowMsgDialog: MutableState<Boolean>,
     onConfirm: () -> Unit,
 ) {
-    if (isShowTeamDialog.value) {
+    if (isShowMsgDialog.value) {
         msgDialog(
             onDismiss = {
-                isShowTeamDialog.value = false
+                isShowMsgDialog.value = false
             },
             onConfirm = {
                 onConfirm()
-                isShowTeamDialog.value = false
+                isShowMsgDialog.value = false
             },
             "Delete User?"
+        )
+    }
+}
+
+@Composable
+fun EditDialog(
+    isShowEditDialog: MutableState<Boolean>,
+    onConfirm: (userInfoProto) -> Unit,
+    userInfo: userInfoProto,
+) {
+    if(isShowEditDialog.value) {
+        editDialog(
+            onDismiss = {
+                isShowEditDialog.value = false
+            },
+            onConfirm = { userInfoProto ->
+                onConfirm(userInfoProto)
+                isShowEditDialog.value = false
+            },
+            userInfo = userInfo,
         )
     }
 }
